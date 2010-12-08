@@ -1,5 +1,5 @@
 Name:                safeint
-Version:             0.3
+Version:             0.4
 Synopsis:            overflow-checked Int type
 Description:         
   Defines a variant of Haskell's Int type that is overflow-checked. If
@@ -29,7 +29,7 @@ Test-Suite TestSafeInt
                      test-framework-quickcheck2,
                      HUnit,
                      QuickCheck >= 2.3 && < 3,
-                     safeint == 0.3
+                     safeint == 0.4
   Default-language:  Haskell98
   Hs-source-dirs:    tests
 

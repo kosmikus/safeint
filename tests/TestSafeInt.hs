@@ -48,8 +48,13 @@ tests =
     unitTest "min-*"   (negate (2 ^ (wordSize `div` 2)) * 2 ^ (wordSize `div` 2 - 1) === minBound),
     testProperty "*"   (propBinOp (*)),
     testProperty "+"   (propBinOp (+)),
-    testProperty "/"   (propBinOp div),
-    testProperty "-"   (propBinOp (-))
+    testProperty "-"   (propBinOp (-)),
+    testProperty "div" (propBinOp div),
+    testProperty "mod" (propBinOp mod),
+    testProperty "quot"(propBinOp quot),
+    testProperty "rem" (propBinOp rem),
+    testProperty "lcm" (propBinOp lcm),
+    testProperty "gcd" (propBinOp gcd)
   ]
 
 anyInt :: Gen Int
