@@ -4,6 +4,8 @@ Synopsis:            overflow-checked Int type
 Description:         
   Defines a variant of Haskell's Int type that is overflow-checked. If
   an overflow or arithmetic error occurs, a run-time exception is thrown.
+  .
+  Currently still in an experimental stage. Everything can change.
 License:             BSD3
 License-file:        LICENSE
 Author:              Andres Loeh
