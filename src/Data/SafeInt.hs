@@ -43,16 +43,8 @@ instance Read SafeInt where
 
 instance Eq SafeInt where
 
-  (==) = eqSafeInt
-  (/=) = neSafeInt
-
-{-# INLINE eqSafeInt #-}
-eqSafeInt :: SafeInt -> SafeInt -> Bool
-eqSafeInt (SI (I# x#)) (SI (I# y#)) = x# ==# y#
-
-{-# INLINE neSafeInt #-}
-neSafeInt :: SafeInt -> SafeInt -> Bool
-neSafeInt (SI (I# x#)) (SI (I# y#)) = x# /=# y#
+  SI x == SI y = x == y
+  SI x /= SI y = x /= y
 
 instance Ord SafeInt where
 
@@ -149,6 +141,10 @@ timesSI (SI (I# x#)) (SI (I# y#)) =
 {-# RULES
 "fromIntegral/Int->SafeInt" fromIntegral = toSafe
   #-}
+
+-- Specialized versions of several functions. They're specialized for
+-- Int in the GHC base libraries. We try to get the same effect by
+-- including specialized code and adding a rewrite rule.
 
 sumS :: [SafeInt] -> SafeInt
 sumS     l       = sum' l 0
