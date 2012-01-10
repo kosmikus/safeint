@@ -3,7 +3,7 @@
 -- Module      :  Data.SafeInt
 -- Copyright   :  (c) 2010 Well-Typed LLP
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Andres Loeh <andres@well-typed.com>
 -- Stability   :  experimental
 -- Portability :  non-portable (GHC Extensions)
@@ -13,7 +13,7 @@
 --
 --------------------------------------------------------------------------
 
-{-# LANGUAGE MagicHash, UnboxedTuples #-}
+{-# LANGUAGE MagicHash, UnboxedTuples, BangPatterns #-}
 
 module Data.SafeInt (SafeInt(..), fromSafe, toSafe) where
 
