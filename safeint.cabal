@@ -1,5 +1,5 @@
 Name:                safeint
-Version:             0.5.1
+Version:             0.5.2
 Synopsis:            overflow-checked Int type
 Description:         
   Defines a variant of Haskell's Int type that is overflow-checked. If
