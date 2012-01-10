@@ -1,5 +1,5 @@
 Name:                safeint
-Version:             0.5
+Version:             0.5.1
 Synopsis:            overflow-checked Int type
 Description:         
   Defines a variant of Haskell's Int type that is overflow-checked. If
@@ -13,7 +13,7 @@ Maintainer:          Andres Loeh <andres@well-typed.com>
 Copyright:           (c) 2010 Well-Typed LLP
 Category:            Data
 Build-type:          Simple
-Cabal-version:       >=1.10
+Cabal-version:       >= 1.8
 Extra-source-files:  tests/TestSafeInt.hs
 
 Library
