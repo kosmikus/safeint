@@ -13,7 +13,7 @@ Maintainer:          Andres Loeh <andres@well-typed.com>
 Copyright:           (c) 2010 Well-Typed LLP
 Category:            Data
 Build-type:          Simple
-Cabal-version:       >= 1.8
+Cabal-version:       >= 1.10
 Extra-source-files:  tests/TestSafeInt.hs
 
 Library
