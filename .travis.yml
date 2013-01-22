@@ -1,1 +1,2 @@
 language: haskell
+  - cabal install --only-dependencies
