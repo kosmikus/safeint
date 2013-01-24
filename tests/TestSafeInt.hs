@@ -1,7 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables, RankNTypes #-}
 module Main where
 
-import Test.Framework
+import Test.Framework as TF
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit as T
@@ -14,11 +14,12 @@ import Data.Maybe
 import Control.Exception as E
 import GHC.Err
 
+main :: IO ()
 main = defaultMain tests
 
 isArithException :: SafeInt -> IO Bool
 isArithException n = E.catch (n `seq` return False)
-                             (\ (e :: ArithException) -> return True)
+                             (\ (_ :: ArithException) -> return True)
 
 sameAsInteger :: (forall a. Integral a => a) -> Bool
 sameAsInteger n = toInteger (n :: Int) == (n :: Integer)
@@ -27,6 +28,7 @@ behavesOk :: (forall a. Integral a => a) -> IO Bool
 behavesOk n = if sameAsInteger n then fromIntegral (n :: Int) === n
                                  else isArithException n
 
+unitTest :: Assertable t => TestName -> t -> TF.Test
 unitTest msg p = testCase msg (T.assert p)
 
 infix 1 ===
@@ -36,6 +38,7 @@ x === y = return (x == y)
 wordSize :: Int
 wordSize = fromJust (find (\ n -> 2 ^ n == (0 :: Word)) [8,16,32,64,128])
 
+tests :: [TF.Test]
 tests =
   [ unitTest "0"       (0 + 0 === 0),
     unitTest "max+"    (isArithException (maxBound + 1)),
