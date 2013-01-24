@@ -6,6 +6,7 @@ import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit as T
 import Test.QuickCheck
+import Test.QuickCheck.Property
 import Data.SafeInt
 import Data.Word
 import Data.List
@@ -63,5 +64,6 @@ anyInt = choose (minBound, maxBound)
 propBinOp :: (forall a. Integral a => a -> a -> a) -> Property
 propBinOp (!) = forAll anyInt $ \ x ->
                 forAll anyInt $ \ y ->
+                morallyDubiousIOProperty $
                 behavesOk (fromIntegral x ! fromIntegral y)
 
