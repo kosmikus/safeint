@@ -32,7 +32,7 @@ Test-suite TestSafeInt
                      test-framework-hunit,
                      test-framework-quickcheck2,
                      HUnit,
-                     QuickCheck >= 2.4 && < 3,
+                     QuickCheck >= 2.7 && < 2.8,
                      safeint == 0.5.3
   Default-language:  Haskell2010
   Hs-source-dirs:    tests
