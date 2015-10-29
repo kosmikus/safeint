@@ -5,8 +5,8 @@ import Test.Framework as TF
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit as T
-import Test.QuickCheck
-import Test.QuickCheck.Property
+import Test.QuickCheck hiding ((===))
+import Test.QuickCheck.Property hiding ((===))
 import Data.SafeInt
 import Data.Word
 import Data.List
