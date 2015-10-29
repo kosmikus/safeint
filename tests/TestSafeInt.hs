@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables, RankNTypes #-}
+{-# LANGUAGE CPP, ScopedTypeVariables, RankNTypes #-}
 module Main where
 
 import Test.Framework as TF
@@ -6,13 +6,13 @@ import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit as T
 import Test.QuickCheck hiding ((===))
-import Test.QuickCheck.Property hiding ((===))
 import Data.SafeInt
-import Data.Word
 import Data.List
 import Data.Maybe
 import Control.Exception as E
-import GHC.Err
+#if !MIN_VERSION_base(4,7,0)
+import Data.Word
+#endif
 
 main :: IO ()
 main = defaultMain tests
@@ -67,6 +67,6 @@ anyInt = choose (minBound, maxBound)
 propBinOp :: (forall a. Integral a => a -> a -> a) -> Property
 propBinOp (!) = forAll anyInt $ \ x ->
                 forAll anyInt $ \ y ->
-                morallyDubiousIOProperty $
+                ioProperty $
                 behavesOk (fromIntegral x ! fromIntegral y)
 
