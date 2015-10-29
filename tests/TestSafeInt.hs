@@ -6,13 +6,11 @@ import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit as T
 import Test.QuickCheck hiding ((===))
+import Control.Exception as E
 import Data.SafeInt
 import Data.List
 import Data.Maybe
-import Control.Exception as E
-#if !MIN_VERSION_base(4,7,0)
 import Data.Word
-#endif
 
 main :: IO ()
 main = defaultMain tests
