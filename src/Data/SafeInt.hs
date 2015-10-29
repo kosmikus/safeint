@@ -19,11 +19,11 @@ module Data.SafeInt (SafeInt(..), fromSafe, toSafe) where
 
 import GHC.Prim
 import GHC.Base
+#if !MIN_VERSION_base(4,7,0)
 import GHC.Err
+#endif
 import GHC.Num
-import GHC.Word
 import GHC.Real
-import GHC.Types
 
 -- GHC 7.8 changed the types of the Int# comparison operators in GHC.Prim. For example
 --
@@ -135,6 +135,7 @@ instance Enum SafeInt where
 "eftIntList"    [1] eftIntFB  (:) [] = eftInt
  #-}
 
+{-# NOINLINE [1] eftInt #-}
 eftInt :: Int# -> Int# -> [SafeInt]
 -- [x1..x2]
 eftInt x0 y | isTrueMacro (x0 ># y) = []
@@ -165,6 +166,7 @@ efdInt x1 x2
  | isTrueMacro (x2 >=# x1) = case maxInt of I# y -> efdtIntUp x1 x2 y
  | otherwise = case minInt of I# y -> efdtIntDn x1 x2 y
 
+{-# NOINLINE [1] efdtInt #-}
 efdtInt :: Int# -> Int# -> Int# -> [SafeInt]
 -- [x1,x2..y]
 efdtInt x1 x2 y
