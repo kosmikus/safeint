@@ -43,9 +43,9 @@ import GHC.Types
 -- This CPP macro allows us to write code for both versions.
 --
 #if MIN_VERSION_base(4,7,0)
-#define isTrue isTrue#
+#define isTrueMacro isTrue#
 #else
-#define isTrue
+#define isTrueMacro
 #endif
 
 newtype SafeInt = SI Int
@@ -137,17 +137,17 @@ instance Enum SafeInt where
 
 eftInt :: Int# -> Int# -> [SafeInt]
 -- [x1..x2]
-eftInt x0 y | isTrue (x0 ># y) = []
+eftInt x0 y | isTrueMacro (x0 ># y) = []
             | otherwise = go x0
                where
-                 go x = SI (I# x) : if isTrue (x ==# y) then [] else go (x +# 1#)
+                 go x = SI (I# x) : if isTrueMacro (x ==# y) then [] else go (x +# 1#)
 
 {-# INLINE [0] eftIntFB #-}
 eftIntFB :: (SafeInt -> r -> r) -> r -> Int# -> Int# -> r
-eftIntFB c n x0 y | isTrue (x0 ># y) = n
+eftIntFB c n x0 y | isTrueMacro (x0 ># y) = n
                   | otherwise = go x0
                  where
-                   go x = SI (I# x) `c` if isTrue (x ==# y) then n else go (x +# 1#)
+                   go x = SI (I# x) `c` if isTrueMacro (x ==# y) then n else go (x +# 1#)
                         -- Watch out for y=maxBound; hence ==, not >
         -- Be very careful not to have more than one "c"
         -- so that when eftInfFB is inlined we can inline
@@ -162,25 +162,25 @@ eftIntFB c n x0 y | isTrue (x0 ># y) = n
 efdInt :: Int# -> Int# -> [SafeInt]
 -- [x1,x2..maxInt]
 efdInt x1 x2
- | isTrue (x2 >=# x1) = case maxInt of I# y -> efdtIntUp x1 x2 y
+ | isTrueMacro (x2 >=# x1) = case maxInt of I# y -> efdtIntUp x1 x2 y
  | otherwise = case minInt of I# y -> efdtIntDn x1 x2 y
 
 efdtInt :: Int# -> Int# -> Int# -> [SafeInt]
 -- [x1,x2..y]
 efdtInt x1 x2 y
- | isTrue (x2 >=# x1) = efdtIntUp x1 x2 y
+ | isTrueMacro (x2 >=# x1) = efdtIntUp x1 x2 y
  | otherwise = efdtIntDn x1 x2 y
 
 {-# INLINE [0] efdtIntFB #-}
 efdtIntFB :: (SafeInt -> r -> r) -> r -> Int# -> Int# -> Int# -> r
 efdtIntFB c n x1 x2 y
- | isTrue (x2 >=# x1) = efdtIntUpFB c n x1 x2 y
+ | isTrueMacro (x2 >=# x1) = efdtIntUpFB c n x1 x2 y
  | otherwise  = efdtIntDnFB c n x1 x2 y
 
 -- Requires x2 >= x1
 efdtIntUp :: Int# -> Int# -> Int# -> [SafeInt]
 efdtIntUp x1 x2 y    -- Be careful about overflow!
- | isTrue (y <# x2) = if isTrue (y <# x1) then [] else [SI (I# x1)]
+ | isTrueMacro (y <# x2) = if isTrueMacro (y <# x1) then [] else [SI (I# x1)]
  | otherwise = -- Common case: x1 <= x2 <= y
                let !delta = x2 -# x1 -- >= 0
                    !y' = y -# delta  -- x1 <= y' <= y; hence y' is representable
@@ -188,14 +188,14 @@ efdtIntUp x1 x2 y    -- Be careful about overflow!
                    -- Invariant: x <= y
                    -- Note that: z <= y' => z + delta won't overflow
                    -- so we are guaranteed not to overflow if/when we recurse
-                   go_up x | isTrue (x ># y') = [SI (I# x)]
+                   go_up x | isTrueMacro (x ># y') = [SI (I# x)]
                            | otherwise = SI (I# x) : go_up (x +# delta)
                in SI (I# x1) : go_up x2
 
 -- Requires x2 >= x1
 efdtIntUpFB :: (SafeInt -> r -> r) -> r -> Int# -> Int# -> Int# -> r
 efdtIntUpFB c n x1 x2 y    -- Be careful about overflow!
- | isTrue (y <# x2) = if isTrue (y <# x1) then n else SI (I# x1) `c` n
+ | isTrueMacro (y <# x2) = if isTrueMacro (y <# x1) then n else SI (I# x1) `c` n
  | otherwise = -- Common case: x1 <= x2 <= y
                let !delta = x2 -# x1 -- >= 0
                    !y' = y -# delta  -- x1 <= y' <= y; hence y' is representable
@@ -203,14 +203,14 @@ efdtIntUpFB c n x1 x2 y    -- Be careful about overflow!
                    -- Invariant: x <= y
                    -- Note that: z <= y' => z + delta won't overflow
                    -- so we are guaranteed not to overflow if/when we recurse
-                   go_up x | isTrue (x ># y') = SI (I# x) `c` n
+                   go_up x | isTrueMacro (x ># y') = SI (I# x) `c` n
                            | otherwise = SI (I# x) `c` go_up (x +# delta)
                in SI (I# x1) `c` go_up x2
 
 -- Requires x2 <= x1
 efdtIntDn :: Int# -> Int# -> Int# -> [SafeInt]
 efdtIntDn x1 x2 y    -- Be careful about underflow!
- | isTrue (y ># x2) = if isTrue (y ># x1) then [] else [SI (I# x1)]
+ | isTrueMacro (y ># x2) = if isTrueMacro (y ># x1) then [] else [SI (I# x1)]
  | otherwise = -- Common case: x1 >= x2 >= y
                let !delta = x2 -# x1 -- <= 0
                    !y' = y -# delta  -- y <= y' <= x1; hence y' is representable
@@ -218,7 +218,7 @@ efdtIntDn x1 x2 y    -- Be careful about underflow!
                    -- Invariant: x >= y
                    -- Note that: z >= y' => z + delta won't underflow
                    -- so we are guaranteed not to underflow if/when we recurse
-                   go_dn x | isTrue (x <# y') = [SI (I# x)]
+                   go_dn x | isTrueMacro (x <# y') = [SI (I# x)]
                            | otherwise = SI (I# x) : go_dn (x +# delta)
    in SI (I# x1) : go_dn x2
 
@@ -226,7 +226,7 @@ efdtIntDn x1 x2 y    -- Be careful about underflow!
 -- Requires x2 <= x1
 efdtIntDnFB :: (SafeInt -> r -> r) -> r -> Int# -> Int# -> Int# -> r
 efdtIntDnFB c n x1 x2 y    -- Be careful about underflow!
- | isTrue (y ># x2) = if isTrue (y ># x1) then n else SI (I# x1) `c` n
+ | isTrueMacro (y ># x2) = if isTrueMacro (y ># x1) then n else SI (I# x1) `c` n
  | otherwise = -- Common case: x1 >= x2 >= y
                let !delta = x2 -# x1 -- <= 0
                    !y' = y -# delta  -- y <= y' <= x1; hence y' is representable
@@ -234,7 +234,7 @@ efdtIntDnFB c n x1 x2 y    -- Be careful about underflow!
                    -- Invariant: x >= y
                    -- Note that: z >= y' => z + delta won't underflow
                    -- so we are guaranteed not to underflow if/when we recurse
-                   go_dn x | isTrue (x <# y') = SI (I# x) `c` n
+                   go_dn x | isTrueMacro (x <# y') = SI (I# x) `c` n
                            | otherwise = SI (I# x) `c` go_dn (x +# delta)
                in SI (I# x1) `c` go_dn x2
 
